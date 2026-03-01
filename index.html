@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Websocket Live Text Rig</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #121212; color: #fff; }
+        #log { background-color: #000; padding: 10px; height: 300px; overflow-y: scroll; border: 1px solid #333}
+        .status-on {color: #00ff00}
+        .status-off {color: #ff0000}
+    </style>
+</head>
+<body>
+    <h1>Websocket Broadcast console</h1>
+
+    <p id ="status" class="status-off">Connecting... </p>
+
+    <form id="message-form" action="">
+        <input id="message-input" type="text" placeholder="Send cargo ..." required>
+        <button type="submit">Deploy Message</button>
+    </form>
+
+    <h3>Live Stream Logs</h3>
+    <pre id="log"></pre>
+</body>
+
+<script>
+    const statusEl = document.getElementById('status');
+    const log = document.getElementById('log');
+    const input = document.getElementById('message-input');
+
+    // 1. Initiate the Handshake
+    // the browser create a tcp connection to the server
+    const socket = new WebSocket('ws://localhost:8080');
+
+    const appentLog = (label, message) => {
+        const entry = `${new Date().toLocaleTimeString()}
+        ${label}${message}\n`
+            log.textContent = entry + log.textContent;
+    }
+
+    socket.addEventListener('open', () => {
+        statusEl.textContent = 'CONNECTED: ws://localhost:8080';
+        statusEl.className = 'status-on';
+
+        appentLog('[SYSTEM]', 'Tunnel Established')
+    });
+
+    socket.addEventListener('close', () => {
+        statusEl.textContent = 'DISCONNECTED';
+        statusEl.className = 'status-off';
+
+        appentLog('[SYSTEM]', 'Tunnel Collapsed');
+    });
+
+    socket.addEventListener('message', (e) => {
+        appentLog('[RECEIVED]', e.data);
+    });
+
+    document.getElementById('message-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if(socket.readyState !== WebSocket.OPEN) {
+            appentLog('[ERROR]', 'No active tunnel found');
+        }
+
+        const msg = input.value.trim();
+        socket.send(msg);
+        appentLog('[SENT]', msg);
+        input.value = '';
+    })
+</script>
+</html>
