@@ -64,8 +64,12 @@ const createMatches = async (req, res) => {
             status: getMatchStatus(start, end),
         }).returning();
 
-        if (res.app.locals.broadcastMatchCreated) {
-            res.app.locals.broadcastMatchCreated(event);
+        if (typeof res.app.locals.broadcastMatchCreated === "function") {
+           try {
+               res.app.locals.broadcastMatchCreated(event);
+           } catch (broadcastErr) {
+               console.error("Failed to broadcast match_created", broadcastErr);
+           }
         }
 
         res.status(201).json({
