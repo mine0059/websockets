@@ -12,7 +12,7 @@ const getMatches = async (req, res) => {
     if (!parsed.success) {
         return res.status(400).json({
             error: 'Invalid query',
-            details: JSON.stringify(parsed.error)
+            details: parsed.error.issues
         });
     }
 
@@ -30,9 +30,9 @@ const getMatches = async (req, res) => {
         });
 
     } catch (err) {
+        console.error('Failed to list match', err);
         res.status(500).json({
             error: 'Failed to list match',
-            details: JSON.stringify(err)
         });
     }
 }
@@ -43,7 +43,7 @@ const createMatches = async (req, res) => {
     if (!parsed.success) {
         return res.status(400).json({
             error: 'Invalid payload',
-            details: JSON.stringify(parsed.error)
+            details: parsed.error.issues
         });
     }
 
@@ -69,9 +69,9 @@ const createMatches = async (req, res) => {
         });
 
     } catch (err) {
+        console.error('Failed to create match', err);
         res.status(500).json({
             error: 'Failed to create match',
-            details: JSON.stringify(err)
         });
     }
 }
