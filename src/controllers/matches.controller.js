@@ -64,6 +64,10 @@ const createMatches = async (req, res) => {
             status: getMatchStatus(start, end),
         }).returning();
 
+        if (res.app.locals.broadcastMatchCreated) {
+            res.app.locals.broadcastMatchCreated(event);
+        }
+
         res.status(201).json({
             data: event
         });
