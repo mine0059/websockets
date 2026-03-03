@@ -12,12 +12,11 @@ const HOST = process.env.HOST || '0.0.0.0';
 
 // This enable us to read Json objects/data
 app.use(express.json());
+app.use(securityMiddleware());
 
 app.get('/', (req, res) => {
     res.send('Hello from Express server!');
 });
-
-app.use(securityMiddleware());
 
 app.use('/matches', matchRouter);
 

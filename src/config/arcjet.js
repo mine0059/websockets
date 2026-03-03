@@ -3,11 +3,13 @@ import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/node";
 const arcjetkey = process.env.ARCJET_KEY;
 const arcjetMode = process.env.ARCJET_MODE === 'DRY_RUN' ? 'DRY_RUN' : 'LIVE' ;
 
-if(!arcjetkey) throw new Error('ARCJET_KEY environment variable is missing.');
+if(!arcjetkey) {
+    console.warn('ARCJET_KEY missing: Arcjet protection disabled.');
+}
 
 export const httpArcjet = arcjetkey ?
     arcjet({
-        key: arcjet,
+        key: arcjetkey,
         rules: [
             shield({ mode: arcjetMode }),
             detectBot({ mode: arcjetMode, allow: ['CATEGORY:SEARCH_ENGINE', 'CATEGORY:PREVIEW']}),
@@ -17,7 +19,7 @@ export const httpArcjet = arcjetkey ?
 
 export const wsArcjet = arcjetkey ?
     arcjet({
-        key: arcjet,
+        key: arcjetkey,
         rules: [
             shield({ mode: arcjetMode }),
             detectBot({ mode: arcjetMode, allow: ['CATEGORY:SEARCH_ENGINE', 'CATEGORY:PREVIEW']}),
@@ -41,7 +43,7 @@ export function securityMiddleware() {
             }
         } catch (err) {
             console.error('Arcjet middleware error', err);
-            return res.status(503).json({ error: 'Server Unavailabel' });
+            return res.status(503).json({ error: 'Server Unavailable' });
         }
 
         next();
