@@ -2,6 +2,7 @@ import http from 'http';
 import express from 'express';
 import { matchRouter } from './routes/matches.routes.js';
 import { attachWebSocketServer } from './ws/server.js';
+import { securityMiddleware } from './config/arcjet.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -11,6 +12,7 @@ const HOST = process.env.HOST || '0.0.0.0';
 
 // This enable us to read Json objects/data
 app.use(express.json());
+app.use(securityMiddleware());
 
 app.get('/', (req, res) => {
     res.send('Hello from Express server!');
