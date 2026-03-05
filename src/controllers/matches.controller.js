@@ -88,37 +88,3 @@ export {
     getMatches,
     createMatches,
 };
-
-
-// const createMatches = async (req, res) => {
-//     const parsed = createMatchSchema.safeParse(req.body);
-//     const { data: { startTime, endTime, homescore, awayscore } } = parsed;
-
-//     if (!parsed.success) {
-//         return res.status(400).json({
-//             error: 'Invalid payload',
-//             details: JSON.stringify(parsed.error)
-//         });
-//     }
-
-//     try {
-//         const [event] = await db.insert(matches).values({
-//             ...parsed.data,
-//             startTime: new Date(startTime),
-//             endTime: new Date(endTime),
-//             homeScore: homescore ?? 0,
-//             awayScore: awayscore ?? 0,
-//             status: getMatchStatus(startTime, endTime),
-//         }).returning();
-
-//         res.status(201).json({
-//             data: event
-//         });
-
-//     } catch (err) {
-//         res.status(500).json({
-//             error: 'Failed to create match',
-//             details: JSON.stringify(err)
-//         });
-//     }
-// };
