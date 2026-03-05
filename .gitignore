@@ -60,3 +60,6 @@ typings/
 
 # next.js build output
 .next
+
+# APM Insight Node Config (contains licensekey)
+apminsightnode.json
